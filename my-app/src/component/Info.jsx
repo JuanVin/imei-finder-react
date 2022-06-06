@@ -1,11 +1,39 @@
 import List from "./List"
 const Info = (param) => {
     let info = []
-    console.log(param.props)
+
+    async function handleDownloadFile(fileName) {
+        let options = {
+            method: 'get',
+            responseType: 'blob',
+            headers: {},
+        }
+        let response = await fetch(`http://localhost:3002/api/finder/getFile/${fileName}`, options);
+        response = await response.blob()
+        let url = window.URL.createObjectURL(response);
+        let a = document.createElement('a');
+        a.href = url;
+        a.download = fileName;
+        a.click()
+    }
+    function handleOrigin(origin) {
+        console.log(origin)
+        switch (origin) {
+            case "t":
+                return "Telefónica"
+            case "c":
+                return "Claro"
+            case "u":
+                return "U.D.A.P.I.F."
+            default:
+                break;
+        }
+    }
     param.props.forEach(file => {
         info.push(
             <>
-                <h2 className="mb-5">Archivo: <span className="text-secondary">{file.file_name}</span></h2>
+                <h3 className="mb-5">Archivo: <button type="button" className="btn btn-link btn-lg" onClick={() => handleDownloadFile(file.file_name)}>{file.file_name}</button> Origen: <span style={{color: "orange"}}>{handleOrigin(file.origin)}</span></h3>
+
                 <div className="row">
                     <div className="col">
                         <h3 className="text-center">Números de Simcard</h3>
